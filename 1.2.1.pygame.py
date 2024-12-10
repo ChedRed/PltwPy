@@ -3,9 +3,10 @@ import pygame
 import random as rand
 
 
-name = input("What's your name?\n > ")
+# name = input("What's your name?\n > ")
 Tutel = (400, 300)
 Tutarget = (400, 300)
+radius = 20
 mouse = (0, 0)
 
 
@@ -14,7 +15,7 @@ pygame.font.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("PLTW 1.2.1 (Python)")
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Andale", 26)
+font = pygame.font.SysFont("Arial", 26)
 
 
 lmb = False
@@ -36,11 +37,12 @@ while running:
             running = False
 
     if (lmb == True) and (oldlmb == False):
-        if (sqrt(pow(mouse[0] - Tutel[0], 2)+pow(mouse[1] - Tutel[1], 2)) < 20):
-            Tutarget = (rand.random()*(800-(20*2)), rand.random()*(600-(20*2)))
+        if (sqrt(pow(mouse[0] - Tutel[0], 2)+pow(mouse[1] - Tutel[1], 2)) < radius):
+            Tutarget = (rand.random()*(800-(radius*2)+radius), rand.random()*(600-(radius*2))+radius)
 
     Tutel = (Tutarget[0] + (Tutel[0] - Tutarget[0])*pow(.5, dt * 12), Tutarget[1] + (Tutel[1] - Tutarget[1])*pow(.5, dt * 12))
-    pygame.draw.circle(screen, (255, 255, 255, 255), Tutel, 20)
+    pygame.draw.circle(screen, (255, 255, 255, 255), Tutel, radius)
+    font.render("Score: ")
 
 
     pygame.display.flip()
