@@ -61,7 +61,7 @@ deltime = new - old
 screen.setup(800,600)
 screen.screensize(0, 0, "black")
 screen.colormode(255)
-screen.title("PLTW 1.2.1 (Python, Turtle)")
+screen.title("PLTW 1.2.2 (Python, Turtle)")
 screen.tracer(0)
 
 
@@ -82,22 +82,6 @@ def winclose():
     running = False
 
 
-def manage_leaderboard():
-    global score
-    global spot
-
-
-    leader_names_list = lb.get_names(leaderboard_file_name)
-    leader_scores_list = lb.get_scores(leaderboard_file_name)
-
-
-    theis = len(leader_scores_list) < 5 or score >= leader_scores_list[4]
-    if theis:
-        lb.update_leaderboard(leaderboard_file_name, leader_names_list, leader_scores_list, player_name, score)
-        return
-    lb.draw_leaderboard(theis, leader_names_list, leader_scores_list, spot, score)
-
-
 screen.onscreenclick(mouseclick)
 screen.getcanvas().winfo_toplevel().protocol("WM_DELETE_WINDOW", winclose)
 
@@ -113,7 +97,7 @@ while running:
             if stage == 0:
                 stage = 1
             if stage == 1:
-                tapos = (rand.random()*(800-(radius*2))-400, rand.random()*(600-(radius*2)-45)-300+radius)
+                tapos = (rand.random()*(800-(radius*2))-400+radius, rand.random()*(500-(radius*2))-300+(radius*2))
                 score += 1
 
 
@@ -131,6 +115,11 @@ while running:
 
 
         # Open, read, and clear file.
+        try:
+            temp = open("Scores", "x")
+            temp.close()
+        except:
+            pass
         file = open("Scores", "r+")
         filines = file.readlines()
         file.truncate(0)
