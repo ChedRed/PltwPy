@@ -4,7 +4,17 @@ import time as ti
 import random as rand
 
 
-name = input("What's your name?\n > ")
+iname = input("What's your name?\n > ")
+name = ""
+for i in range(len(iname)):
+    if (iname[i].lower() in "abcdefghijklmnopqrstuvwxyz"):
+        name += iname[i]
+
+
+scobord = []
+longest = 0
+
+
 running = True
 stage = 0
 
@@ -13,6 +23,8 @@ screen = tutel.Screen()
 turt = tutel.Turtle()
 scoretext = tutel.Turtle()
 timedtext = tutel.Turtle()
+tempturtl = tutel.Turtle()
+boardtext = tutel.Turtle()
 
 
 radius = 20
@@ -33,6 +45,14 @@ timedtext.penup()
 timedtext.hideturtle()
 timedtext.color("white")
 timedtext.goto(385, 255)
+tempturtl.penup()
+tempturtl.hideturtle()
+tempturtl.color("black")
+tempturtl.goto(0, 0)
+boardtext.penup()
+boardtext.hideturtle()
+boardtext.color("white")
+boardtext.goto(0, 0)
 
 
 old = ti.time()
@@ -107,21 +127,66 @@ while running:
         if int(timer) <= 0:
             timer = 1
             stage = 2
-    elif stage == 2:
+    elif stage == 2: # Comments for the confused (like me):
+
+
+        # Open, read, and clear file.
+        file = open("Scores", "r+")
+        filines = file.readlines()
+        file.truncate(0)
+
+
+        # 1. Set scobord list of lists to player name and score.
+        # 2. Append scores from file (and prep for stage 4).
+        # 3. Sort (yay lambda!).
+        # 4. Keep top 5.
+        scobord = [[name, score]]
+        tempturtl.write(name, move=True, font=("Arial", 26, "normal"))
+        longest = tempturtl.xcor()
+        for i in range(len(filines)):
+            if (filines[i] != "\n"):
+                newfiline = filines[i].split("|")
+                scobord.append([newfiline[0], int(newfiline[1])])
+                tempturtl.goto(0, 0)
+                tempturtl.write(newfiline[0], move=True, font=("Arial", 26, "normal"))
+                if tempturtl.xcor() > longest:
+                    longest = tempturtl.xcor()
+        boardtext.goto(-400-longest, 255)
+        scobord.sort(key=lambda x:x[1], reverse=True)
+        scobord = scobord[:5]
+
+
+        # Write scobord data to file and close it.
+        file.seek(0)
+        for i in range(len(scobord)):
+            file.write(scobord[i][0]+"|"+str(scobord[i][1])+"\n")
+        file.close()
+        stage = 3
+
+
+    elif stage == 3:
         if timer - deltime < 0:
             timer = 0
-            stage = 3
+            stage = 4
         else: timer -= deltime
         timedtext.color(int(timer * 255), int(timer * 255), int(timer * 255))
         scoretext.color(int(timer * 255), int(timer * 255), int(timer * 255))
         turt.color(int(timer * 255), int(timer * 255), int(timer * 255))
-    elif stage == 3:
-        pass
+    elif stage == 4:
+        boardtext.setx(-390 + (boardtext.xcor() + 390)*pow(.5, deltime * 12))
+        for i in range(len(scobord)):
+            boardtext.sety(255-(35*i))
+            boardtext.write("] " + str(scobord[i][0]) + ": " + str(scobord[i][1]), move=False, font=("Arial", 26, "normal"))
+        for i in range(5-len(scobord)):
+            boardtext.sety(255-(35*(i+len(scobord))))
+            boardtext.write("] ", move=False, font=("Arial", 26, "normal"))
+
 
 
     screen.update()
     scoretext.clear()
     timedtext.clear()
+    boardtext.clear()
     old = new
 
 
