@@ -65,7 +65,7 @@ screen.title("PLTW 1.2.1 (Python, Turtle)")
 screen.tracer(0)
 
 
-timer = 5
+timer = 30
 score = 0
 
 
