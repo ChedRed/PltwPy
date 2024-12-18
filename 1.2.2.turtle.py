@@ -12,6 +12,7 @@ for i in range(len(iname)):
 
 
 scobord = []
+Tier = [[15, "You have reached the bronze tier!"], [25, "You have reached the silver tier!"], [35, "You have reached the gold tier!"], [45, "You have reached the platinum tier!"]]
 longest = 0
 
 
@@ -102,8 +103,11 @@ while running:
 
 
     turt.goto(tapos[0] + (turt.pos()[0] - tapos[0])*pow(.5, deltime * 12), tapos[1] + (turt.pos()[1] - tapos[1])*pow(.5, deltime * 12))
-    scoretext.write("Score: " + str(score), move=False, font=("Arial", 26, "normal"))
-    timedtext.write(str(int(timer)) + " Seconds Left", move=False, align="right", font=("Arial", 26, "normal"))
+
+
+    if stage < 4:
+        scoretext.write("Score: " + str(score), move=False, font=("Arial", 26, "normal"))
+        timedtext.write(str(int(timer)) + " Seconds Left", move=False, align="right", font=("Arial", 26, "normal"))
 
 
     if stage == 1:
@@ -162,6 +166,20 @@ while running:
         scoretext.color(int(timer * 255), int(timer * 255), int(timer * 255))
         turt.color(int(timer * 255), int(timer * 255), int(timer * 255))
     elif stage == 4:
+        if timer+deltime > 1:
+            timer = 1
+        else:
+            timer += deltime
+
+        for i in range(len(Tier)):
+            if Tier[len(Tier)-i-1][0] <= score:
+                scoretext.setx(800)
+                scoretext.write(Tier[len(Tier)-i-1][1], move=True, font=("Arial", 26, "normal"))
+                scoretext.setx(((scoretext.xcor()-800)/2)-400)
+                scoretext.sety(0)
+                scoretext.color(int(timer * 255), int(timer * 255), int(timer * 255))
+                scoretext.write(Tier[len(Tier)-i-1][1], move=False, font=("Arial", 26, "normal"))
+                break
         boardtext.setx(-390 + (boardtext.xcor() + 390)*pow(.5, deltime * 12))
         for i in range(len(scobord)):
             boardtext.sety(255-(35*i))
